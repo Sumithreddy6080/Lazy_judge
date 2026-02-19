@@ -693,6 +693,54 @@ const AdminLeaderboard = () => {
     }
   };
 
+  const signatureConfig = {
+  'poster-presentation': [
+    {
+      name: 'Dr. Kolikipogu Ramakrishna',
+      title: 'Professor | CBIT'
+    },
+    {
+      name: 'Dr. S. MADHU',
+      title: 'HoD - CSM|CSO|AI&DS, GNITC'
+    },
+    {
+      name: 'Dr. A. Krishna',
+      title: 'Asst Prof IoT | GNITC'
+    }
+  ],
+
+  'startup-expo': [
+    {
+      name: 'MR. V. Kishore',
+      title: 'Project Manager | WIPRO Technologies'
+    },
+    {
+      name: 'Dr. S. MADHU',
+      title: 'HoD - CSM|CSO|AI&DS, GNITC'
+    },
+    {
+      name: 'Dr. B. Santhosh Kumar',
+      title: 'Dean R&D | HoD-CSE | GNIT'
+    }
+  ],
+
+  'paper-presentation': [
+    {
+      name: 'DR. MAMATHA TALAKOTI',
+      title: 'Assoc. Prof | HoD-CSE | SNIST'
+    },
+    {
+      name: 'Dr. S. MADHU',
+      title: 'HoD - CSM|CSO|AI&DS, GNITC'
+    },
+    {
+      name: 'DR. P. PAVAN KUMAR',
+      title: 'Asst. Prof AIML | GNITC'
+    }
+  ]
+};
+
+
   const downloadPDF = () => {
     if (!analytics) return;
 
@@ -705,22 +753,7 @@ const AdminLeaderboard = () => {
     // Add watermark logo in center
     const logoImg = new Image();
     logoImg.src = '/logo.png';
-    // try {
-    //   const pageWidth = doc.internal.pageSize.width;
-    //   const pageHeight = doc.internal.pageSize.height;
-    //   const logoSize = 120; // Large watermark size
-    //   const xCenter = (pageWidth - logoSize) / 2;
-    //   const yCenter = (pageHeight - logoSize) / 2;
-      
-    //   // Add logo with transparency as watermark
-    //   doc.saveGraphicsState();
-    //   doc.setGState(new doc.GState({ opacity: 0.1 }));
-    //   doc.addImage(logoImg, 'JPEG', xCenter, yCenter, logoSize, logoSize);
-    //   doc.restoreGraphicsState();
-    // } catch (error) {
-    //   console.warn('Watermark logo could not be loaded');
-    // }
-
+    
     // Add Header image at top
     const headerImg = new Image();
     headerImg.src = '/letterHead.jpeg';
@@ -767,11 +800,6 @@ const AdminLeaderboard = () => {
     doc.text(team.totalMembers.toString(), 120 + 39, yPos);
     
     yPos += 5;
-    
-    // doc.setFont(undefined, 'bold');
-    // doc.text('MEMBERS', 14, yPos);
-    // doc.text(':', 14 + colWidth, yPos);
-    
     yPos += 5;
 
     // Team Members Section
@@ -784,33 +812,6 @@ const AdminLeaderboard = () => {
       member.name,
       member.email || ''
     ]);
-    
-    // doc.autoTable({
-    //   head: [['TEAM MEMBERS NAMES', 'EMAIL ID']],
-    //   body: memberTableData,
-    //   startY: yPos,
-    //   theme: 'grid',
-    //   margin: { left: 14, right: 14 },
-    //   tableWidth: '170',
-    //   styles: {
-    //     fontSize: 8,
-    //     cellPadding: 2,
-    //     lineWidth: 0.5,
-    //     lineColor: 0,
-    //   },
-    //   headStyles: {
-    //     fillColor: [255, 255, 255],
-    //     textColor: 0,
-    //     fontStyle: 'bold',
-    //     lineWidth: 0.5,
-    //     lineColor: 0,
-    //   },
-    //   columnStyles: {
-    //     0: { cellWidth: 80 },
-    //     1: { cellWidth: 70 },
-    //   },
-    // });
-
     doc.autoTable({
   head: [['TEAM MEMBERS NAMES', 'EMAIL ID']],
   body: memberTableData,
@@ -822,8 +823,8 @@ const AdminLeaderboard = () => {
   tableWidth: doc.internal.pageSize.width - 28,  // 14 left + 14 right
 
   styles: {
-    fontSize: 8,
-    cellPadding: 3,
+    fontSize: 7,
+    cellPadding: 2,
     lineWidth: 0.5,
     lineColor: 0,
   },
@@ -841,13 +842,13 @@ const AdminLeaderboard = () => {
 });
 
 
-    yPos = doc.lastAutoTable.finalY + 10;
+    yPos = doc.lastAutoTable.finalY + 5;
 
     // Scoring Rubrics Section
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
     doc.text('SCORING RUBRICS:-', 14, yPos);
-    yPos += 7;
+    yPos += 4;
 
     // Prepare scoring table data
     const scoringHeaders = ['S.L', 'PARAMETERS'];
@@ -901,7 +902,7 @@ const AdminLeaderboard = () => {
 
     // Calculate total marks
     const totalRawMarks = evaluations.reduce((sum, e) => sum + e.totalScore, 0);
-    const averagedMarks = (totalRawMarks / 4).toFixed(0);
+    const averagedMarks = (totalRawMarks / 4).toFixed(2);
     const finalDisplay = `${averagedMarks}/100`;
 
 
@@ -964,35 +965,41 @@ const AdminLeaderboard = () => {
     });
 
     // Check if we need a new page for signatures
-    if (yPos > 220) {
+    if (yPos > 235) {
       doc.addPage();
       yPos = 20;
     } else {
-      yPos += 10;
+      yPos += 15;
     }
 
     // Signature Section
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont(undefined, 'normal');
     
     const sigY = yPos;
     
-    // Left signature
-    doc.text('DR. MAMATHA TALAKOTI', 14, sigY);
-    doc.text('Assoc. Prof | HoD-CSE | SNIST', 14, sigY + 5);
-    
-    // Middle signature
-    doc.text('Dr. S. MADHU', 80, sigY);
-    doc.text('HoD - CSM|CSO|AI&DS, GNITC', 73, sigY + 5);
-    
-    // Right signature
-    doc.text('DR. P. PAVAN KUMAR', 155, sigY);
-    doc.text('Asst. Prof AIML | GNITC', 155, sigY + 5);
-    
-    yPos = sigY + 15;
+    // Signature Section
+doc.setFontSize(9);
+doc.setFont(undefined, 'normal');
+
+const signatures = signatureConfig[team.eventType] || [];
+
+const positions = [14, 80, 155]; // left, center, right
+
+signatures.forEach((sig, index) => {
+  const x = positions[index] || 14;
+
+  doc.setFont(undefined, 'bold');
+  doc.text(sig.name.toUpperCase(), x, sigY);
+
+  doc.setFont(undefined, 'normal');
+  doc.text(sig.title, x, sigY + 4);
+});
+
+    yPos = sigY + 10;
 
     // Footer logos
-    yPos += 20;  // space after signatures
+    yPos += 5;  // space after signatures
 
 try {
   const footerLogoImg = new Image();
