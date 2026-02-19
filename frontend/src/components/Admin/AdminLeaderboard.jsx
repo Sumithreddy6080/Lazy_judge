@@ -959,7 +959,7 @@ const AdminLeaderboard = () => {
         yPos += 5;
         doc.setFont(undefined, 'normal');
         const remarks = doc.splitTextToSize(evaluation.remarks, 180);
-        doc.text(remarks, 20, yPos);
+        doc.text(remarks, 14, yPos);
         yPos += remarks.length * 5 + 5;
       }
     });
