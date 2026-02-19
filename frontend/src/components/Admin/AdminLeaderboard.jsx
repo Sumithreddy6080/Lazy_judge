@@ -816,23 +816,27 @@ const AdminLeaderboard = () => {
   body: memberTableData,
   startY: yPos,
   theme: 'grid',
-  margin: { left: 14, right: 14 },
+
+  // 🔥 This is the real fix
+  margin: { left: 14 },
+  tableWidth: doc.internal.pageSize.width - 28,  // 14 left + 14 right
+
   styles: {
     fontSize: 8,
-    cellPadding: 2,
+    cellPadding: 3,
     lineWidth: 0.5,
     lineColor: 0,
   },
+
   headStyles: {
     fillColor: [255, 255, 255],
     textColor: 0,
     fontStyle: 'bold',
-    lineWidth: 0.5,
-    lineColor: 0,
   },
+
   columnStyles: {
-    0: { cellWidth: 80 },
-    1: { cellWidth: 102 },
+    0: { cellWidth: 100 },   
+    1: { cellWidth: 'auto' } 
   },
 });
 
@@ -895,11 +899,10 @@ const AdminLeaderboard = () => {
       return row;
     });
 
-    // Calculate total marks - average by number of judges
+    // Calculate total marks
     const totalRawMarks = evaluations.reduce((sum, e) => sum + e.totalScore, 0);
-    const numJudges = evaluations.length;
-    const averagedMarks = numJudges > 0 ? (totalRawMarks / numJudges).toFixed(0) : 0;
-    const finalDisplay = `${averagedMarks} / 100`;
+    const averagedMarks = (totalRawMarks / 4).toFixed(0);
+    const finalDisplay = `${averagedMarks}/100`;
 
 
     doc.autoTable({
@@ -997,7 +1000,7 @@ try {
 
   const pageWidth = doc.internal.pageSize.width;
 
-  const logoWidth = 55;
+  const logoWidth = 55;   // 🔥 bigger
   const logoHeight = 35;
 
   const centerX = (pageWidth - logoWidth) / 2;

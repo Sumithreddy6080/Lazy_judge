@@ -7,6 +7,7 @@ const TeamsView = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const eventTypes = [
     { value: 'all', label: 'All Events' },
@@ -35,6 +36,15 @@ const TeamsView = () => {
       ? teams
       : teams.filter((team) => team.eventType === selectedEvent);
 
+  // Apply search filter
+  const searchFilteredTeams = filteredTeams.filter(team => {
+    const searchLower = searchTerm.toLowerCase();
+    const nameMatch = team.name.toLowerCase().includes(searchLower);
+    const memberMatch = team.members && Array.isArray(team.members) && 
+      team.members.some(member => member.name && member.name.toLowerCase().includes(searchLower));
+    return nameMatch || memberMatch;
+  });
+
   if (loading) return <Loader />;
 
   return (
@@ -54,8 +64,32 @@ const TeamsView = () => {
         </select>
       </div>
 
+      {/* Search Bar */}
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search teams by name or member name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+        <svg
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+      </div>
+
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredTeams.map((team) => (
+        {searchFilteredTeams.map((team) => (
           <div key={team._id} className="card">
             <div className="flex justify-between items-start mb-3">
               <h3 className="text-lg font-semibold text-gray-900">{team.name}</h3>
@@ -97,9 +131,11 @@ const TeamsView = () => {
         ))}
       </div>
 
-      {filteredTeams.length === 0 && (
+      {searchFilteredTeams.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500">No teams found.</p>
+          <p className="text-gray-500">
+            {teams.length === 0 ? 'No teams found.' : 'No teams match your search criteria.'}
+          </p>
         </div>
       )}
     </div>
